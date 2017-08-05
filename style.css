@@ -1,0 +1,20 @@
+body {
+    font-size: 14px;
+    font-family: Helvetica, Arial, serif;
+}
+
+.container {
+    width: 800px;
+    margin: auto;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 12px;
+}
+
+label {
+    font-weight: 500;
+    width: 65px;
+    display: inline-block;
+}
