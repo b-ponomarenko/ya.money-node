@@ -8,10 +8,10 @@ const app = {
   fields: ['fio', 'email', 'phone'],
 
   init() {
-    this.setupEventListeners();
+    this._setupEventListeners();
   },
 
-  setupEventListeners() {
+  _setupEventListeners() {
     this.formEl.addEventListener('submit', this.submit.bind(this));
   },
 
@@ -21,15 +21,15 @@ const app = {
 
     const validateResult = this.validate();
 
-    this.clearErrors();
+    this._clearErrors();
     if ( !validateResult.isValid ) {
-      return this.showErrors(validateResult.errorFields);
+      return this._showErrors(validateResult.errorFields);
     }
 
-    this.sendData(url);
+    this._sendData(url);
   },
 
-  sendData(url) {
+  _sendData(url) {
     const submitBtn = document.getElementById('submitButton');
     const resultContainer = document.getElementById('resultContainer');
 
@@ -57,7 +57,7 @@ const app = {
             resultContainer.classList.add('progress');
             resultContainer.innerText = 'progress';
             setTimeout(() => {
-              this.sendData(url);
+              this._sendData(url);
             }, data.timeout);
             return;
         }
@@ -74,7 +74,7 @@ const app = {
       const fieldValue = formData[key];
       if (
           fieldValue.search(new RegExp(pattern, 'ig')) === -1 ||
-          ( key === 'phone' && this.getSumFromPhoneNumber(fieldValue) > this.MAX_PHONE_SUM )
+          ( key === 'phone' && this._getSumFromPhoneNumber(fieldValue) > this.MAX_PHONE_SUM )
         ) {
         isValid = false;
         errorFields.push(key);
@@ -101,7 +101,7 @@ const app = {
     }
   },
 
-  getSumFromPhoneNumber(number) {
+  _getSumFromPhoneNumber(number) {
     return number.split('').reduce((prev, current) => {
       const num = Number(current);
       if ( isNaN(num) ) {
@@ -112,7 +112,7 @@ const app = {
     }, 0);
   },
 
-  showErrors(errorFields) {
+  _showErrors(errorFields) {
     const elements = this.formEl.elements;
 
     errorFields.forEach((errorField) => {
@@ -120,7 +120,7 @@ const app = {
     });
   },
 
-  clearErrors() {
+  _clearErrors() {
     const elements = this.formEl.elements;
     const resultContainer = document.getElementById('resultContainer');
 
