@@ -1,4 +1,5 @@
-const app = {
+
+const myForm = {
   formEl: document.getElementById('myForm'),
 
   MAX_PHONE_SUM: 30,
@@ -141,4 +142,4 @@ const app = {
   }
 };
 
-app.init();
+myForm.init();
