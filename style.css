@@ -1,20 +1,42 @@
 body {
-    font-size: 14px;
-    font-family: Helvetica, Arial, serif;
+  font-size: 14px;
+  font-family: Helvetica, Arial, serif;
+}
+
+form {
+  margin-bottom: 18px;
+}
+
+#resultContainer {
+  font-size: 36px;
+  padding: 10px;
+  text-align: center;
 }
 
 .container {
-    width: 800px;
-    margin: auto;
+  width: 800px;
+  margin: auto;
 }
 
 .form-label {
-    display: block;
-    margin-bottom: 12px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.error {
+  border: 1px solid red;
+}
+
+.success {
+  border: 1px solid green;
+}
+
+.progress {
+  border: 1px solid orange;
 }
 
 label {
-    font-weight: 500;
-    width: 65px;
-    display: inline-block;
+  font-weight: 500;
+  width: 65px;
+  display: inline-block;
 }

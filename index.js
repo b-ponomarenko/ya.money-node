@@ -1,12 +1,18 @@
 const app = {
-  form: document.getElementById('myForm'),
+  formEl: document.getElementById('myForm'),
+
+  MAX_PHONE_SUM: 30,
+
+  ERROR_CLASS_NAME: 'error',
+
+  fields: ['fio', 'email', 'phone'],
 
   init() {
     this.setupEventListeners();
   },
 
   setupEventListeners() {
-    this.form.addEventListener('submit', this.submit.bind(this));
+    this.formEl.addEventListener('submit', this.submit.bind(this));
   },
 
   submit(e) {
@@ -15,22 +21,68 @@ const app = {
 
     const validateResult = this.validate();
 
+    this.clearErrors();
     if ( !validateResult.isValid ) {
-      return;
+      return this.showErrors(validateResult.errorFields);
     }
 
-    // fetch(url, {
-    // })
+    this.sendData(url);
+  },
+
+  sendData(url) {
+    const submitBtn = document.getElementById('submitButton');
+    const resultContainer = document.getElementById('resultContainer');
+
+    submitBtn.setAttribute('disabled', 'disabled');
+
+    fetch(url, {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(this.getData())
+    })
+      .then((res) => res.json())
+      .then(data => {
+        submitBtn.removeAttribute('disabled');
+
+        switch (data.status) {
+          case 'success':
+            resultContainer.classList.add('success');
+            resultContainer.innerText = 'success';
+            return;
+          case 'error':
+            resultContainer.classList.add('error');
+            resultContainer.innerText = data.reason;
+            return;
+          case 'progress':
+            resultContainer.classList.add('progress');
+            resultContainer.innerText = 'progress';
+            setTimeout(() => {
+              this.sendData(url);
+            }, data.timeout);
+            return;
+        }
+      })
   },
 
   validate() {
-    const form = this.getData();
+    const formData = this.getData();
     const errorFields = [];
+    let isValid = true;
 
-
+    this.fields.forEach((key) => {
+      const pattern = this.formEl.elements[key].attributes.pattern.value;
+      const fieldValue = formData[key];
+      if (
+          fieldValue.search(new RegExp(pattern, 'ig')) === -1 ||
+          ( key === 'phone' && this.getSumFromPhoneNumber(fieldValue) > this.MAX_PHONE_SUM )
+        ) {
+        isValid = false;
+        errorFields.push(key);
+      }
+    });
 
     return {
-      isValid: true,
+      isValid,
       errorFields
     }
   },
@@ -40,13 +92,52 @@ const app = {
       fio,
       email,
       phone
-    } = this.form.elements;
+    } = this.formEl.elements;
 
     return {
       fio: fio.value,
       email: email.value,
       phone: phone.value
     }
+  },
+
+  getSumFromPhoneNumber(number) {
+    return number.split('').reduce((prev, current) => {
+      const num = Number(current);
+      if ( isNaN(num) ) {
+        return prev;
+      } else {
+        return prev + num;
+      }
+    }, 0);
+  },
+
+  showErrors(errorFields) {
+    const elements = this.formEl.elements;
+    const resultContainer = document.getElementById('resultContainer');
+
+    resultContainer.className = '';
+    resultContainer.innerText = '';
+
+    errorFields.forEach((errorField) => {
+      elements[errorField].classList.add(this.ERROR_CLASS_NAME);
+    });
+  },
+
+  clearErrors() {
+    const elements = this.formEl.elements;
+
+    for( let el of elements ) {
+      el.classList.remove(this.ERROR_CLASS_NAME);
+    }
+  },
+
+  setData(data) {
+    const elements = this.formEl.elements;
+
+    this.fields.forEach((key) => {
+      elements[key].value = data[key];
+    })
   }
 };
 
