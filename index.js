@@ -114,10 +114,6 @@ const app = {
 
   showErrors(errorFields) {
     const elements = this.formEl.elements;
-    const resultContainer = document.getElementById('resultContainer');
-
-    resultContainer.className = '';
-    resultContainer.innerText = '';
 
     errorFields.forEach((errorField) => {
       elements[errorField].classList.add(this.ERROR_CLASS_NAME);
@@ -126,6 +122,10 @@ const app = {
 
   clearErrors() {
     const elements = this.formEl.elements;
+    const resultContainer = document.getElementById('resultContainer');
+
+    resultContainer.className = '';
+    resultContainer.innerText = '';
 
     for( let el of elements ) {
       el.classList.remove(this.ERROR_CLASS_NAME);
